@@ -38,10 +38,10 @@
   },
   "homepage": "https://github.com/frida/frida-objc#readme",
   "dependencies": {
-    "@babel/core": "^7.1.2",
-    "@babel/plugin-transform-runtime": "^7.1.0",
-    "@babel/preset-env": "^7.1.0",
-    "@babel/runtime-corejs2": "^7.1.2",
-    "frida-compile": "^8.0.1"
+    "@babel/core": "^7.5.5",
+    "@babel/plugin-transform-runtime": "^7.5.5",
+    "@babel/preset-env": "^7.5.5",
+    "@babel/runtime-corejs2": "^7.5.5",
+    "frida-compile": "^8.0.4"
   }
 }
