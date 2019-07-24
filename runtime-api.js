@@ -4,7 +4,7 @@
 
 
 let _api = null;
-let size_t = Process.pointerSize === 8 ? 'uint64' : Process.pointerSize === 4 ? 'uint32' : "unsupported platform";
+const size_t = Process.pointerSize === 8 ? 'uint64' : Process.pointerSize === 4 ? 'uint32' : "unsupported platform";
 
 module.exports = {
     get api() {
@@ -110,8 +110,9 @@ module.exports = {
             const variables = api.variables || new Set();
             const optionals = api.optionals || {};
 
-            const exportByName = Module
-            .enumerateExportsSync(api.module)
+            const exportByName = Process
+            .getModuleByName(api.module)
+            .enumerateExports()
             .reduce((result, exp) => {
                 result[exp.name] = exp;
                 return result;
@@ -125,10 +126,11 @@ module.exports = {
                     if (typeof signature === 'function') {
                         signature.call(temporaryApi, exp.address);
                     } else {
-                        temporaryApi[name] = new NativeFunction(exp.address, signature[0], signature[1], signature[2]);
+                        temporaryApi[name] = new NativeFunction(exp.address, signature[0], signature[1]); 
                     }
                 } else if(!(name in optionals)) {
-                    throw new Error(`missing function '${name}' in module '${api.module}`);
+                    console.error("Missing function name " + name + 'in module ' + api.module);
+                    // throw new Error(`missing function '${name}' in module '${api.module}`);
                 }
             });
 
@@ -137,11 +139,11 @@ module.exports = {
                 if (exp !== undefined && exp.type === 'variable') {
                     temporaryApi[name] = exp.address;
                 } else if(!(name in optionals)) {
-                    throw new Error(`missing variable '${name}' in module '${api.module}`);
+                    console.error("Missing variable name " + name + 'in module ' + api.module);
+//                    throw new Error(`missing variable '${name}' in module '${api.module}`);
                 }
             });
         });
-
 
         _api = temporaryApi;
         return _api;

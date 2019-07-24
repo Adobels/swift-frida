@@ -42,6 +42,7 @@ let errors = new Map();
 let storeError = new NativeCallback(function storeError(error) {
     errors.set(Process.getCurrentThreadId(), error);
 }, 'void', ['pointer']);
+
 function checkTrampolineError() {
     let id = Process.getCurrentThreadId();
     let val = errors.get(id);

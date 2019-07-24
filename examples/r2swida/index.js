@@ -6,8 +6,14 @@ let types = new Map();
 global.Swift = Swift;
 
 
-r2frida.pluginRegister('swift', function(name) {
-    if (name === 'swa') {
+r2frida.pluginRegister('swift', r2frida_swift_plugin);
+
+function r2frida_swift_plugin(name) {
+    if (!name.startsWith('sw')) {
+      return;
+    }
+    switch(name) {
+    case 'swa':
         return function(args) {
             for (let [key, val] of Swift.enumerateTypesSync(...args)) {
                 types.set(key, val);
@@ -15,6 +21,27 @@ r2frida.pluginRegister('swift', function(name) {
             global.swiftTypes = types;
             return `found ${types.size} types`;
         };
+    case 'swt':
+    case 'swtl':
+    case 'swdg':
+    case 'swp':
+    case 'swiD':
+    case 'swis':
+      break;
+    default:
+        return function() {
+            return "r2swida help\n" +
+                "\n" +
+                "\\sw?                                  \tShow this help.\n" +
+                "\\swiD <name>...                       \tDemangle one or more Swift names.\n" +
+                "\\swa [<lib>...]                       \tCollect information about Swift types (from <lib>, or everywhere). Needs to be run before most other commands work.\n" +
+                "\\swp <type> <addr>...                 \tDump the Swift variable(s) of type <type> at <addr>.\n" +
+                "\\swdg <generic_type> <type_params>... \tInstantiate the generic type <generic_type> with the type parameters <type_params>.\n" +
+                "\\swt <type>                           \tShow information about the type named <type>. Note: quote the whole command with \" to avoid problems with special characters in the type name.\n" +
+                "\\swtl                                 \tList all types that were found by '\\swa'.\n"
+        };
+        // TODO: help
+      break;
     }
     if (name === 'swt') {
         return function(args) {
@@ -144,19 +171,4 @@ r2frida.pluginRegister('swift', function(name) {
     }
     if (name === 'swis') { // list demangled symbols
     }
-    if (name === 'sw?') {
-        return function() {
-            return "r2swida help\n" +
-                "\n" +
-                "\\sw?                                  \tShow this help.\n" +
-                "\\swiD <name>...                       \tDemangle one or more Swift names.\n" +
-                "\\swa [<lib>...]                       \tCollect information about Swift types (from <lib>, or everywhere). Needs to be run before most other commands work.\n" +
-                "\\swp <type> <addr>...                 \tDump the Swift variable(s) of type <type> at <addr>.\n" +
-                "\\swdg <generic_type> <type_params>... \tInstantiate the generic type <generic_type> with the type parameters <type_params>.\n" +
-                "\\swt <type>                           \tShow information about the type named <type>. Note: quote the whole command with \" to avoid problems with special characters in the type name.\n" +
-                "\\swtl                                 \tList all types that were found by '\\swa'.\n"
-        };
-        // TODO: help
-    }
-    // TODO: allow creating other kinds of types (tuples, meta, ...)
-});
+}

@@ -650,7 +650,7 @@ function findAllTypes(library) {
         Module.ensureInitialized(library);
         mods = [{name: library, base: Module.findBaseAddress(library)}];
     } else {
-        mods = Process.enumerateModulesSync();
+        mods = Process.enumerateModules();
     }
     for (let mod of mods) {
         if (enumeratedLibs.has(mod.name))
@@ -693,7 +693,7 @@ function findAllTypes(library) {
         const METADATA_PREFIX = "type metadata for ";
         const METADATA_ACCESSOR_PREFIX = "type metadata accessor for ";
         const NOMINAL_PREFIX = "nominal type descriptor for ";
-        for (let exp of Module.enumerateExportsSync(mod.name)) {
+        for (let exp of Process.getModuleByName(mod.name).enumerateExports()) {
             if (mangling.isSwiftName(exp.name)) {
                 let demangled = mangling.demangle(exp.name);
                 if (demangled.startsWith(METADATA_PREFIX)) {
