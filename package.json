@@ -5,13 +5,13 @@
   "main": "index.js",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/maltek/swift-frida.git"
+    "url": "https://github.com/trufae/swift-frida.git"
   },
   "license": "LGPL-3.0 WITH WxWindows-exception-3.1",
   "bugs": {
-    "url": "https://github.com/frida/frida-objc/issues"
+    "url": "https://github.com/trufae/swift-frida.git"
   },
-  "homepage": "https://github.com/frida/frida-objc#readme",
+  "homepage": "https://github.com/trufae/swift-frida.git",
   "dependencies": {
     "frida-compile": "^10.0.0"
   }
